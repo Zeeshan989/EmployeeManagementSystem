@@ -18,7 +18,7 @@ class _SigninPageState extends State<SigninPage> {
 
   Future<void> _signin() async {
     print('Inside login');
-    final url = Uri.parse('http://192.168.207.41:8000/api/v1/users/loginuser');
+    final url = Uri.parse('http://192.168.10.5:8000/api/v1/users/loginuser');
     final response = await http.post(
       url,
       headers: {'Content-Type': 'application/json'},

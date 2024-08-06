@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:ems/People.dart';
+import 'package:ems/mtasks.dart';
 import 'package:ems/signin.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
@@ -37,7 +38,7 @@ class _UserPageState extends State<MuserInfoPage> {
     getinfo();
   }
   Future<void> getinfo() async {
-    var url = Uri.parse('http://192.168.10.8:8000/api/v1/users/userinfo');
+    var url = Uri.parse('http://192.168.10.5:8000/api/v1/users/userinfo');
     var response = await http.get(url,
     headers: {
       'Authorization':'Bearer ${globals.globalaccessToken}',
@@ -72,7 +73,7 @@ class _UserPageState extends State<MuserInfoPage> {
   }
   Future<void> logout() async {
     print('InsideLogout');
-    var url = Uri.parse('http://192.168.10.8:8000/api/v1/users/logout');
+    var url = Uri.parse('http://192.168.10.5:8000/api/v1/users/logout');
     final response = await http.post(
       url,
       headers: {
@@ -145,7 +146,10 @@ class _UserPageState extends State<MuserInfoPage> {
               leading: Icon(Icons.people),
               title: Text('My Team'),
               onTap: (){
-                
+                  Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => MyTeam()),
+      );
               },
             ),
             ListTile(

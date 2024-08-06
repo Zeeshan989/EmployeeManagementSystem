@@ -35,7 +35,7 @@ class _PeoplePageState extends State<Manage> {
   }
 
   Future<void> getallmanagersinfo() async {
-    var url = Uri.parse('http://192.168.10.8:8000/api/v1/users/getmanagers');
+    var url = Uri.parse('http://192.168.10.5:8000/api/v1/users/getmanagers');
     var response = await http.get(url);
     var managersdata = jsonDecode(response.body);
     setState(() {
@@ -48,7 +48,7 @@ class _PeoplePageState extends State<Manage> {
 
 
   Future<void> getallemployeesinfo() async {
-    var url = Uri.parse('http://192.168.10.8:8000/api/v1/users/getemployees');
+    var url = Uri.parse('http://192.168.10.5:8000/api/v1/users/getemployees');
     var response = await http.get(url);
     var employeesdata = jsonDecode(response.body);
     setState(() {
@@ -60,7 +60,7 @@ class _PeoplePageState extends State<Manage> {
  
 
   Future<void> logout() async {
-    var url = Uri.parse('http://192.168.10.8:8000/api/v1/users/logout');
+    var url = Uri.parse('http://192.168.10.5:8000/api/v1/users/logout');
     final response = await http.post(
       url,
       headers: {
@@ -395,7 +395,7 @@ class _viewteamState extends State<viewteam> {
   );
   }
   Future<void> addassignee(sub,sup) async {
-          var url = Uri.parse('http://192.168.10.8:8000/api/v1/users/addassignee');
+          var url = Uri.parse('http://192.168.10.5:8000/api/v1/users/addassignee');
         final response = await http.post(
             url,
             headers: {'Content-Type': 'application/json'},
@@ -435,7 +435,7 @@ Future<void> deleterelation(sup,sub) async {
   
 
     
-        var url = Uri.parse('http://192.168.10.8:8000/api/v1/users/deleteassignee');
+        var url = Uri.parse('http://192.168.10.5:8000/api/v1/users/deleteassignee');
         final response = await http.post(
             url,
             headers: {'Content-Type': 'application/json'},
@@ -490,7 +490,7 @@ Future<void> deleterelation(sup,sub) async {
 
   Future<void> getemployonman(dynamic sup) async {
   
-    var url = Uri.parse('http://192.168.10.8:8000/api/v1/users/getmanageremp');
+    var url = Uri.parse('http://192.168.10.5:8000/api/v1/users/getmanageremp');
     final response = await http.post(
       url,
       headers: {'Content-Type': 'application/json'},

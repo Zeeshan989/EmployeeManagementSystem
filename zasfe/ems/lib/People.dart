@@ -8,8 +8,7 @@ import 'package:http/http.dart' as http;
 import 'package:ems/globals.dart' as globals;
 import 'package:image_picker/image_picker.dart';
 import 'package:permission_handler/permission_handler.dart';
-
-typedef TUserCallback = Future<void> Function();
+typedef PeopleCallback = Future<void> Function();
 
 class People extends StatefulWidget {
   @override
@@ -17,9 +16,9 @@ class People extends StatefulWidget {
 }
 
 class _PeoplePageState extends State<People> {
-  List users = [];
+  List<Map<String, dynamic>> users = [];
   final TextEditingController _searchController = TextEditingController();
-  List _filteredUsers = [];
+  List<Map<String, dynamic>> _filteredUsers = [];
 
   @override
   void initState() {
@@ -29,27 +28,56 @@ class _PeoplePageState extends State<People> {
   }
 
   Future<void> getallusersinfo() async {
-    var url = Uri.parse('http://192.168.10.8:8000/api/v1/users/getallusers');
-    var response = await http.get(url);
-    users = jsonDecode(response.body);
-    _filteredUsers = users;
+    print('GETTING USERS');
+    var url = Uri.parse('http://192.168.10.5:8000/api/v1/users/getallusers');
+    try {
+      var response = await http.get(url);
+
+      if (response.statusCode == 200) {
+        // Debugging: Print the raw response body
+        print('Response Body: ${response.body}');
+
+        // Attempt to parse the JSON response
+        var data = jsonDecode(response.body);
+
+        // Check if the parsed data is a list
+        if (data is List) {
+          users = List<Map<String, dynamic>>.from(data);
+          _filteredUsers = users;
+          print('All users: $users');
+        } else if (data is Map<String, dynamic> && data.containsKey('users')) {
+          users = List<Map<String, dynamic>>.from(data['users']);
+          _filteredUsers = users;
+          print('All users: $users');
+        } else {
+          // Handle unexpected data format
+          print('Unexpected data format: $data');
+        }
+      } else {
+        print('Error: Server responded with status code ${response.statusCode}');
+      }
+    } catch (e) {
+      print('Error parsing response: $e');
+    }
+
     setState(() {});
   }
 
   void _filterUsers() {
-    String query = _searchController.text.toLowerCase();
+    String sc = _searchController.text.toLowerCase();
     setState(() {
       _filteredUsers = users.where((user) {
-        return user['email'].toLowerCase().contains(query) ||
-            user['middlename'].toLowerCase().contains(query) ||
-            user['lastname'].toLowerCase().contains(query);
+        final email = user['email']?.toLowerCase() ?? '';
+        final middlename = user['middlename']?.toLowerCase() ?? '';
+        final lastname = user['lastname']?.toLowerCase() ?? '';
+
+        return email.contains(sc) || middlename.contains(sc) || lastname.contains(sc);
       }).toList();
     });
-    print('Filtered User:     ${_filteredUsers} \n\n\n');
   }
 
   Future<void> logout() async {
-    var url = Uri.parse('http://192.168.10.8:8000/api/v1/users/logout');
+    var url = Uri.parse('http://192.168.10.3:8000/api/v1/users/logout');
     final response = await http.post(
       url,
       headers: {
@@ -113,7 +141,7 @@ class _PeoplePageState extends State<People> {
             ListTile(
               leading: Icon(Icons.home),
               title: Text('Home'),
-              onTap: (){
+              onTap: () {
                 Navigator.pop(context);
               },
             ),
@@ -121,18 +149,15 @@ class _PeoplePageState extends State<People> {
               leading: Icon(Icons.people),
               title: Text('People'),
             ),
-             ListTile(
+            ListTile(
               leading: Icon(Icons.file_copy),
               title: Text('Manage Employee Assignments'),
-              onTap: (){
-                 Navigator.push(
-              context,
-              
-              MaterialPageRoute(builder: (context) =>Manage()),
-                 );
-                 
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => Manage()),
+                );
               },
-
             ),
           ],
         ),
@@ -171,12 +196,13 @@ class _PeoplePageState extends State<People> {
                       ),
                       Text(
                         "${globals.globaluser["Designation"]}",
-                        style: TextStyle(color: Color.fromARGB(255, 250, 244, 244), fontSize: 18),
+                        style: TextStyle(
+                            color: Color.fromARGB(255, 250, 244, 244),
+                            fontSize: 18),
                       ),
                     ],
                   ),
                 ),
-                
               ],
             ),
             Padding(
@@ -189,79 +215,91 @@ class _PeoplePageState extends State<People> {
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16.0),
               child: SingleChildScrollView(
-                child: Column(children: [
-                  Row(
-                    children: [
-                      Container(
-                        width: searchBarWidth,
-                        child: TextField(
-                          controller: _searchController,
-                          decoration: InputDecoration(
-                            hintText: 'Search by name, email, etc.',
-                            prefixIcon: Icon(Icons.search),
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(30.0),
-                              borderSide: BorderSide.none,
-                            ),
-                            filled: true,
-                            contentPadding: EdgeInsets.symmetric(
-                                vertical: 0, horizontal: 20),
-                            fillColor: Colors.grey[200],
-                          ),
-                        ),
-                      ),
-                      SizedBox(width: 8), // Add some space between the search bar and the other content
-                      Container(
-                        width: otherContentWidth,
-                        child: ElevatedButton(
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.blue, // Background color
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(15.0),
+                child: Column(
+                  children: [
+                    Row(
+                      children: [
+                        Container(
+                          width: searchBarWidth,
+                          child: TextField(
+                            controller: _searchController,
+                            decoration: InputDecoration(
+                              hintText: 'Search by name, email, etc.',
+                              prefixIcon: Icon(Icons.search),
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(30.0),
+                                borderSide: BorderSide.none,
+                              ),
+                              filled: true,
+                              contentPadding: EdgeInsets.symmetric(
+                                  vertical: 0, horizontal: 20),
+                              fillColor: Colors.grey[200],
                             ),
                           ),
-                          onPressed: () {
-                            showDialog(
-                              context: context,
-                              builder: (BuildContext context) {
-                                return AddUserDialog(onEmpcall:getallusersinfo);
-                              },
-                            );
-                          },
-                          child: Text(
-                            '+',
-                            style: TextStyle(color: Colors.white,fontSize: 15),
+                        ),
+                        SizedBox(
+                            width:
+                                8), // Add some space between the search bar and the other content
+                        Container(
+                          width: otherContentWidth,
+                          child: ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors.blue, // Background color
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(15.0),
+                              ),
+                            ),
+                            onPressed: () {
+                              showDialog(
+                                context: context,
+                                builder: (BuildContext context) {
+                                  return AddUserDialog(onUpdateUsers:getallusersinfo);
+                                },
+                              );
+                            },
+                            child: Text(
+                              '+',
+                              style:
+                                  TextStyle(color: Colors.white, fontSize: 15),
+                            ),
                           ),
                         ),
-                      ),
-                    ],
-                  ),
-                  Container(
-                    height: 500, // Set a fixed height for the horizontal ListView
-                    child: ListView.builder(
+                      ],
+                    ),
+                    Container(
+                      height: 500, // Set a fixed height for the ListView
+                      child: ListView.builder(
                         scrollDirection: Axis.vertical,
                         itemCount: _filteredUsers.length, // Number of items in the ListView
                         itemBuilder: (context, index) {
-                          return Card(
-                            elevation: 4,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(10),
-                            ),
-                            child: Container(
-                              width: 80, // Fixed width for each item
-                              padding: const EdgeInsets.all(8.0),
-                              child: Row(
+                          final user = _filteredUsers[index];
+
+                          // Ensure the user has necessary data to display
+                          if (user != null &&
+                              user.isNotEmpty &&
+                              user['firstname'] != null) {
+                            return Card(
+                              elevation: 4,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                              child: Container(
+                                width: 80, // Fixed width for each item
+                                padding: const EdgeInsets.all(8.0),
+                                child: Row(
                                   children: [
                                     CircleAvatar(
-                                      backgroundImage: NetworkImage(_filteredUsers[index]['avatar']!),
+                                      backgroundImage: NetworkImage(
+                                          user['avatar'] ?? ''),
                                     ),
                                     SizedBox(width: 10),
                                     Expanded(
                                       child: Column(
-                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
                                         children: [
                                           Text(
-                                            '${_filteredUsers[index]['firstname']} ${_filteredUsers[index]['middlename']} ${_filteredUsers[index]['lastname']}  -(${_filteredUsers[index]['Designation']})',
+                                            '${user['firstname'] ?? ''}  - (${user['Designation'] ?? 'N/A'})',
                                             style: TextStyle(
                                               color: Colors.red,
                                               fontWeight: FontWeight.bold,
@@ -270,33 +308,43 @@ class _PeoplePageState extends State<People> {
                                           SizedBox(height: 5),
                                           Row(
                                             children: [
-                                              Icon(Icons.email, size: 16, color: Colors.grey),
+                                              Icon(Icons.email,
+                                                  size: 16,
+                                                  color: Colors.grey),
                                               SizedBox(width: 5),
-                                              Text(_filteredUsers[index]['email']!),
+                                              Text(user['email'] ?? 'N/A',style: TextStyle(fontSize: 9),),
                                             ],
                                           ),
                                           SizedBox(height: 5),
                                           Row(
                                             children: [
-                                              Icon(Icons.phone, size: 16, color: Colors.grey),
+                                              Icon(Icons.phone,
+                                                  size: 16,
+                                                  color: Colors.grey),
                                               SizedBox(width: 5),
-                                              Text(_filteredUsers[index]['Phone']!),
+                                              Text(user['Phone'] ?? 'N/A',style: TextStyle(fontSize: 9)),
                                             ],
                                           ),
                                         ],
                                       ),
                                     ),
                                     SizedBox(width: 10),
-                                    Text('Reports To:'),
+                                    Text(
+                                        'Reports To: ${user['ReportsTo'] ?? 'N/A'}'),
                                     SizedBox(width: 10),
-                                  ]
+                                  ],
+                                ),
                               ),
-                            ),
-                          );
-                        }
+                            );
+                          } else {
+                            // Skip rendering if the user data is incomplete or null
+                            return SizedBox.shrink();
+                          }
+                        },
+                      ),
                     ),
-                  ),
-                ]),
+                  ],
+                ),
               ),
             )
           ],
@@ -307,8 +355,8 @@ class _PeoplePageState extends State<People> {
 }
 
 class AddUserDialog extends StatefulWidget {
-  final TUserCallback onEmpcall;
-  AddUserDialog({required this.onEmpcall});
+  final PeopleCallback onUpdateUsers;
+   AddUserDialog({required this.onUpdateUsers});
   @override
   _AddUserDialogState createState() => _AddUserDialogState();
 }
@@ -398,7 +446,7 @@ class _AddUserDialogState extends State<AddUserDialog> {
     try {
       var request = http.MultipartRequest(
         'POST',
-        Uri.parse('http://192.168.10.8:8000/api/v1/users/register'),
+        Uri.parse('http://192.168.10.5:8000/api/v1/users/register'),
       );
 
       request.fields['username'] = _usernameController.text;
@@ -431,8 +479,9 @@ class _AddUserDialogState extends State<AddUserDialog> {
       );
 
       if (response.statusCode == 200 || response.statusCode == 201) {
+        widget.onUpdateUsers();
+        
         setState(() {
-           widget.onEmpcall();
           
         });
         Navigator.of(context).pop();
