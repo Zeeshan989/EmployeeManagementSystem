@@ -38,7 +38,7 @@ class _UserPageState extends State<MuserInfoPage> {
     getinfo();
   }
   Future<void> getinfo() async {
-    var url = Uri.parse('http://192.168.10.5:8000/api/v1/users/userinfo');
+    var url = Uri.parse('http://192.168.10.7:8000/api/v1/users/userinfo');
     var response = await http.get(url,
     headers: {
       'Authorization':'Bearer ${globals.globalaccessToken}',
@@ -73,7 +73,7 @@ class _UserPageState extends State<MuserInfoPage> {
   }
   Future<void> logout() async {
     print('InsideLogout');
-    var url = Uri.parse('http://192.168.10.5:8000/api/v1/users/logout');
+    var url = Uri.parse('http://192.168.10.7:8000/api/v1/users/logout');
     final response = await http.post(
       url,
       headers: {

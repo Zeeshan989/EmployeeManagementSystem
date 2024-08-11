@@ -29,7 +29,7 @@ class _PeoplePageState extends State<People> {
 
   Future<void> getallusersinfo() async {
     print('GETTING USERS');
-    var url = Uri.parse('http://192.168.10.5:8000/api/v1/users/getallusers');
+    var url = Uri.parse('http://192.168.10.7:8000/api/v1/users/getallusers');
     try {
       var response = await http.get(url);
 
@@ -446,7 +446,7 @@ class _AddUserDialogState extends State<AddUserDialog> {
     try {
       var request = http.MultipartRequest(
         'POST',
-        Uri.parse('http://192.168.10.5:8000/api/v1/users/register'),
+        Uri.parse('http://192.168.10.7:8000/api/v1/users/register'),
       );
 
       request.fields['username'] = _usernameController.text;

@@ -20,7 +20,7 @@ class _MyTeamState extends State<MyTeam> {
   }
 
   Future<void> manageremployees(dynamic sup) async {
-    var url = Uri.parse('http://192.168.10.5:8000/api/v1/users/getmanageremp');
+    var url = Uri.parse('http://192.168.10.7:8000/api/v1/users/getmanageremp');
     final response = await http.post(
       url,
       headers: {'Content-Type': 'application/json'},
@@ -36,7 +36,7 @@ class _MyTeamState extends State<MyTeam> {
 
   Future<void> logout() async {
     print('InsideLogout');
-    var url = Uri.parse('http://192.168.10.5:8000/api/v1/users/logout');
+    var url = Uri.parse('http://192.168.10.7:8000/api/v1/users/logout');
     final response = await http.post(
       url,
       headers: {
@@ -89,8 +89,8 @@ class _MyTeamState extends State<MyTeam> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            _buildHeader(),
-            SizedBox(height: 30),
+           
+            SizedBox(height: 10),
             const Center(
               child: Text(
                 'Team',
@@ -133,49 +133,7 @@ class _MyTeamState extends State<MyTeam> {
     );
   }
 
-  Widget _buildHeader() {
-    return Stack(
-      children: [
-        Container(
-          color: Colors.blueAccent,
-          height: 120,
-          width: double.infinity,
-        ),
-        Positioned(
-          top: 20,
-          left: 20,
-          child: CircleAvatar(
-            radius: 40,
-            backgroundImage: NetworkImage(globals.globaluser["avatar"]),
-          ),
-        ),
-        Positioned(
-          top: 30,
-          left: 120,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                "${globals.globaluser["middlename"]} ${globals.globaluser["lastname"]}",
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              Text(
-                "${globals.globaluser["Designation"]}",
-                style: TextStyle(
-                  color: Color.fromARGB(255, 250, 244, 244),
-                  fontSize: 18,
-                ),
-              ),
-            ],
-          ),
-        ),
-      ],
-    );
-  }
+ 
 
   Widget _buildEmployeeList(Size screenSize) {
     return Container(
@@ -184,13 +142,8 @@ class _MyTeamState extends State<MyTeam> {
         scrollDirection: Axis.horizontal,
         itemCount: etom.length, // Number of items in the ListView
         itemBuilder: (context, index) {
-          return Card(
-            elevation: 5, // Card shadow
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(15),
-            ),
-            margin: EdgeInsets.symmetric(horizontal: 8.0),
-            child: Container(
+          return 
+            Container(
               width: screenSize.width * 0.3, // Responsive width
               padding: const EdgeInsets.all(16.0),
               decoration: BoxDecoration(
@@ -215,26 +168,11 @@ class _MyTeamState extends State<MyTeam> {
                     textAlign: TextAlign.center,
                   ),
                   const SizedBox(height: 8),
-                  ElevatedButton(
-                    onPressed: () {},
-                    child: const Text(
-                      'View Status',
-                      style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
-                    ),
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.blueAccent, // Button color
-                      foregroundColor: Colors.white, // Text color
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 16, vertical: 8),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                    ),
-                  ),
+                 
                 ],
               ),
-            ),
-          );
+            );
+          
         },
       ),
     );
@@ -278,7 +216,7 @@ class _TaskAssignmentScreenState extends State<TaskAssignmentScreen> {
   }
 
   Future<void> manageremployees(dynamic sup) async {
-    var url = Uri.parse('http://192.168.10.5:8000/api/v1/users/getmanageremp');
+    var url = Uri.parse('http://192.168.10.7:8000/api/v1/users/getmanageremp');
     final response = await http.post(
       url,
       headers: {'Content-Type': 'application/json'},
@@ -302,7 +240,7 @@ class _TaskAssignmentScreenState extends State<TaskAssignmentScreen> {
 
   Future<void> logout() async {
     print('InsideLogout');
-    var url = Uri.parse('http://192.168.10.5:8000/api/v1/users/logout');
+    var url = Uri.parse('http://192.168.10.7:8000/api/v1/users/logout');
     final response = await http.post(
       url,
       headers: {
@@ -355,7 +293,7 @@ class _TaskAssignmentScreenState extends State<TaskAssignmentScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              _buildHeader(),
+              
               SizedBox(height: 30),
               Text(
                 'Add New Task',
@@ -375,7 +313,7 @@ class _TaskAssignmentScreenState extends State<TaskAssignmentScreen> {
               Center(
                 child: TextButton(
                   onPressed: _submitTask,
-                  child: Text('ASSIGN TASK'),
+                  child: Text('ADD NEW TASK'),
                   style: TextButton.styleFrom(
                     foregroundColor: Colors.white,
                     backgroundColor: Colors.blueAccent,
@@ -394,49 +332,7 @@ class _TaskAssignmentScreenState extends State<TaskAssignmentScreen> {
     );
   }
 
-  Widget _buildHeader() {
-    return Stack(
-      children: [
-        Container(
-          color: Colors.blueAccent,
-          height: 120,
-          width: double.infinity,
-        ),
-        Positioned(
-          top: 20,
-          left: 20,
-          child: CircleAvatar(
-            radius: 40,
-            backgroundImage: NetworkImage(globals.globaluser["avatar"]),
-          ),
-        ),
-        Positioned(
-          top: 30,
-          left: 120,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                "${globals.globaluser["middlename"]} ${globals.globaluser["lastname"]}",
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              Text(
-                "${globals.globaluser["Designation"]}",
-                style: TextStyle(
-                  color: Color.fromARGB(255, 250, 244, 244),
-                  fontSize: 18,
-                ),
-              ),
-            ],
-          ),
-        ),
-      ],
-    );
-  }
+ 
 
   Widget _buildTaskTitleField() {
     return TextField(
@@ -488,7 +384,9 @@ class _TaskAssignmentScreenState extends State<TaskAssignmentScreen> {
               onPressed: () {
                 if (_milestoneController.text.isNotEmpty) {
                   setState(() {
-                    _milestones.add(_milestoneController.text);
+                    var milestone=_milestoneController.text;
+                    
+                    _milestones.add(milestone);
                     _milestoneController.clear();
                   });
                 }
@@ -601,7 +499,7 @@ class _TaskAssignmentScreenState extends State<TaskAssignmentScreen> {
       print('INSIDE SUBMIT TASK');
 
 
-      var url = Uri.parse('http://192.168.10.5:8000/api/v1/users/assignedtask');
+      var url = Uri.parse('http://192.168.10.7:8000/api/v1/users/assignedtask');
 
       // Prepare the request body
       var requestBody = {
